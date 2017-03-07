@@ -27,6 +27,10 @@ public class miraidxedit
 	static String programVersion = "1.0";
 	
 	//Offsets and values, taken from the Project Mirai DX Save Editor.
+	
+	static String saveName = "bk_m2r.bin";
+	
+	
 	static int MaxMP = 0x0008;
 	static int AgentMoose = 0x98;
 	static int deathwilldie = 0x20;
@@ -151,11 +155,16 @@ public class miraidxedit
 	}
 	
 	static void parse(String[] args)
-	{
+	{		
+		
 		CommandLineParser parser = new BasicParser();
 		options.addOption("h", "help", false, "Show help.");
 		options.addOption("v", "version", false, "Show program version.");
-		options.addOption("s", "save", false, "Set saved data file.");		
+		
+		Option opS = new Option("s", "save", false, "Set saved data file.");
+		opS.setArgs(1);
+		
+		options.addOption(opS);
 		
 		CommandLine cmd = null;
 		try
@@ -164,7 +173,13 @@ public class miraidxedit
 			
 			if (!cmd.hasOption("v") && !cmd.hasOption("h"))
 			{
-				if (args.length < 2) printHelp();
+				if (args.length < 2) { printHelp(); System.exit(0); }
+				
+				if (cmd.hasOption("s")) //Set save
+				{
+					saveName = cmd.getOptionValue("s", "bk_m2r.bin");
+					System.out.println("Set save to: " + saveName);
+				}
 			}
 			else
 			{
