@@ -197,7 +197,7 @@ public class miraidxedit
 	{
 		System.out.println(programName + " v." + programVersion);
 		System.out.println("\n" + programDesc);
-		System.out.println("Author: gnmmarechal\nRepository: https://github.com/gnmmarechal/hacktools");
+		System.out.println("Author: gnmmarechal\nCredits: Me for the port, those involved in PMDXSE (both the Python and C# versions, this is based on those)\n\nRepository: https://github.com/gnmmarechal/hacktools");
 	}
 	static void printHelp()
 	{
