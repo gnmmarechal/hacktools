@@ -17,6 +17,7 @@
  
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 import org.apache.commons.cli.*;
 
 
@@ -194,7 +195,10 @@ public class miraidxedit
 					if (cmd.getOptionValue("e").equals("#"))
 						editConsole(saveName);
 					else
+					{
+						backupSave(saveName);
 						editSave(saveName, cmd.getOptionValue("e"));
+					}
 				}
 			}
 			else
@@ -264,10 +268,15 @@ public class miraidxedit
 	{
 		File f = new File(path);
 		return (f.isFile() && f.canRead());
-	}
+	}	
 	static void backupSave(String path)
 	{
 		if (!saveExists(path)) error("File " + path + " doesn't exist or is unreadable.");
+		try
+		{
+			if (saveExists(path + ".bak")) Files.delete(Paths.get(path + ".bak"));
+			Files.copy(Paths.get(path), Paths.get(path + ".bak"), StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) { };
 		
 		
 	}
@@ -309,7 +318,9 @@ public class miraidxedit
 
 	static void applyMultipleEdits(String saveName, ArrayList<String> editList)
 	{
-		System.out.println("Applying edits to save...");
+		System.out.println("Backing up save " + saveName + "...");
+		backupSave(saveName);
+		System.out.println("Applying edits to save " + saveName + "...");
 		System.out.println("Edit list: " + editList);
 		for (int i = 0; i < editList.size(); i++)
 		{
@@ -321,10 +332,79 @@ public class miraidxedit
 	static void editSave(String saveName, String editName)
 	{
 		if (isInteger(editName)) editSave(saveName, Integer.parseInt(editName));
+		switch(editName)
+		{
+			case "unlockAllSongs":
+				editSave(saveName, 1);
+				break;
+			case "maxMP":
+				editSave(saveName, 2);
+				break;
+			case "unlockHardMode":
+				editSave(saveName, 3);
+				break;
+			case "unlockHardModeButton":
+				editSave(saveName, 4);
+				break;
+			case "unlockHardModeTouch":
+				editSave(saveName, 5);
+				break;
+			
+		}
 	}
 	
 	static void editSave(String saveName, int editID)
 	{
+		switch(editID)
+		{
+			case 1: //Unlock All Songs
+			{
+				int[] val = { 0xA0 };
+				for (int Song_offset : Songs)
+				{
+					editFile(saveName, Song_offset + AgentMoose, val);
+				}
+				break;
+			}
+			case 2: //Maximum MP
+			{
+				int[] val = { 0xF4, 0x23, 0x0F, 0x00 };
+				editFile(saveName, MaxMP, val);
+				break;
+			}
+			case 3: //Unlock Hard Mode (Button + Touch)
+			{
+				int[] val = { 0x01 };
+				for (int Song_offset : Songs)
+				{
+					editFile(saveName, deathwilldie, val);
+				}
+				for (int Song_offset : Songs)
+				{
+					editFile(saveName, SpankrPoodle, val);
+				}
+				break;
+			}
+			case 4: //Unlock Hard Mode (Button)
+			{
+				int[] val = { 0x01 };
+				for (int Song_offset : Songs)
+				{
+					editFile(saveName, deathwilldie, val);
+				}
+				break;		
+			}
+			case 5: //Unlock Hard Mode (Touch)
+			{
+				int[] val = { 0x01 };
+				for (int Song_offset : Songs)
+				{
+					editFile(saveName, SpankrPoodle, val);
+				}
+				break;				
+			}
+		}
+		
 	}
 	
 	static void editFile(String filePath, int offset, int[] value)
@@ -335,7 +415,7 @@ public class miraidxedit
 			fileStore.seek(offset);
 			for (int i = 0; i < value.length; i++)
 			{
-				fileStore.write((byte) value[i]);
+				fileStore.write(value[i]);
 			}
 			
 			fileStore.close();
