@@ -191,7 +191,6 @@ public class miraidxedit
 				
 				if (cmd.hasOption("e"))
 				{
-					System.out.println(cmd.getOptionValue("e"));
 					if (cmd.getOptionValue("e").equals("#"))
 						editConsole(saveName);
 					else
@@ -280,19 +279,43 @@ public class miraidxedit
 	
 	static void editConsole(String saveName)
 	{
+		System.out.println("Quick Edit Tool");
 		Scanner sca = new Scanner(System.in);
+		ArrayList<String> editList = new ArrayList<String>();
 		boolean inLoop = true;
 		while (inLoop)
 		{
 			System.out.printf(">");
 			String input = sca.nextLine();
-			if (input.equals("-1")) inLoop = false;
-			else if (input.equals("-2")) printList();
+			if (input.equals("-1") || input.equals("q") || input.equals("quit")) inLoop = false;
+			else if (input.equals("-2") || input.equals("list")) printList();
+			else if (input.equals("-3") || input.equals("w"))
+			{
+				applyMultipleEdits(saveName, editList);
+				editList.clear();
+			}
+			else if (input.equals("-4") || input.equals("wq"))
+			{
+				applyMultipleEdits(saveName, editList);
+				editList.clear();
+				inLoop = false;
+			}
 			else
 			{
-				editSave(saveName, input);
+				editList.add(input);
 			}
 		}
+	}
+
+	static void applyMultipleEdits(String saveName, ArrayList<String> editList)
+	{
+		System.out.println("Applying edits to save...");
+		System.out.println("Edit list: " + editList);
+		for (int i = 0; i < editList.size(); i++)
+		{
+			System.out.println("Applying edit: " + editList.get(i));
+			editSave(saveName, editList.get(i));
+		}		
 	}
 	
 	static void editSave(String saveName, String editName)
