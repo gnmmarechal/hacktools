@@ -326,5 +326,20 @@ public class miraidxedit
 	static void editSave(String saveName, int editID)
 	{
 	}
+	
+	static void editFile(String filePath, int offset, int[] value)
+	{
+		try
+		{
+			RandomAccessFile fileStore = new RandomAccessFile(filePath, "rw");
+			fileStore.seek(offset);
+			for (int i = 0; i < value.length; i++)
+			{
+				fileStore.write((byte) value[i]);
+			}
+			
+			fileStore.close();
+		} catch (Exception e) {}
+	}
 }
 
