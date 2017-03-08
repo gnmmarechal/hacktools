@@ -15,7 +15,8 @@
  * 
  */
  
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 import org.apache.commons.cli.*;
 
 
@@ -162,9 +163,16 @@ public class miraidxedit
 		options.addOption("v", "version", false, "Show program version.");
 		
 		Option opS = new Option("s", "save", false, "Set saved data file.");
+		//Option opE = new Option("e", "edit", false, "Edit the saved data file.");
 		opS.setArgs(1);
+		Option opE = OptionBuilder.hasArgs(1)
+					.withLongOpt("edit")
+					.isRequired(false)
+					.withDescription("Edit the saved data file")
+					.create("e");
 		
 		options.addOption(opS);
+		options.addOption(opE);
 		
 		CommandLine cmd = null;
 		try
@@ -180,6 +188,15 @@ public class miraidxedit
 					saveName = cmd.getOptionValue("s", "bk_m2r.bin");
 					System.out.println("Set save to: " + saveName);
 				}
+				
+				if (cmd.hasOption("e"))
+				{
+					System.out.println(cmd.getOptionValue("e"));
+					if (cmd.getOptionValue("e").equals("#"))
+						editConsole(saveName);
+					else
+						editSave(saveName, cmd.getOptionValue("e"));
+				}
 			}
 			else
 			{
@@ -188,7 +205,7 @@ public class miraidxedit
 					printVersion();
 					System.exit(0);
 				}
-				if (cmd.hasOption("h"))
+				else if (cmd.hasOption("h"))
 				{
 					printHelp();
 					System.exit(0);
@@ -208,6 +225,25 @@ public class miraidxedit
 		}
 		return str;
 	}
+	static boolean isInteger(String s) 
+	{
+		return isInteger(s,10);
+	}
+	
+	static boolean isInteger(String s, int radix) 
+	{
+		if(s.isEmpty()) return false;
+		for(int i = 0; i < s.length(); i++) 
+		{
+			if(i == 0 && s.charAt(i) == '-') 
+			{
+				if(s.length() == 1) return false;
+				else continue;
+			}
+			if(Character.digit(s.charAt(i),radix) < 0) return false;
+		}
+		return true;
+	}	
 	static void printVersion()
 	{
 		System.out.println(programName + " v." + programVersion);
@@ -221,5 +257,51 @@ public class miraidxedit
 		System.out.println("Usage:\n - miraidxedit -s <save> -e <edit ID/name> -- Edit the save");
 	}
 	
+	static void printList()
+	{
+	}
+	
+	static boolean saveExists(String path)
+	{
+		File f = new File(path);
+		return (f.isFile() && f.canRead());
+	}
+	static void backupSave(String path)
+	{
+		if (!saveExists(path)) error("File " + path + " doesn't exist or is unreadable.");
+		
+		
+	}
+	static void error(String msg)
+	{
+		System.out.println("ERROR: " + msg);
+		System.exit(1);
+	}
+	
+	static void editConsole(String saveName)
+	{
+		Scanner sca = new Scanner(System.in);
+		boolean inLoop = true;
+		while (inLoop)
+		{
+			System.out.printf(">");
+			String input = sca.nextLine();
+			if (input.equals("-1")) inLoop = false;
+			else if (input.equals("-2")) printList();
+			else
+			{
+				editSave(saveName, input);
+			}
+		}
+	}
+	
+	static void editSave(String saveName, String editName)
+	{
+		if (isInteger(editName)) editSave(saveName, Integer.parseInt(editName));
+	}
+	
+	static void editSave(String saveName, int editID)
+	{
+	}
 }
 
