@@ -349,6 +349,21 @@ public class miraidxedit
 			case "unlockHardModeTouch":
 				editSave(saveName, 5);
 				break;
+			case "unlockAllItems":
+				editSave(saveName, 6);
+				break;
+			case "unlockSmallItems":
+				editSave(saveName, 7);
+				break;
+			case "unlockMediumItems":
+				editSave(saveName, 8);
+				break;
+			case "unlockLargeItems":
+				editSave(saveName, 9);
+				break;
+			case "unlockAirItems":
+				editSave(saveName, 10);
+				break;
 			
 		}
 	}
@@ -401,8 +416,70 @@ public class miraidxedit
 				{
 					editFile(saveName, SpankrPoodle, val);
 				}
-				break;				
+				break;
 			}
+			case 6: //Unlock All Items In Shop
+			{
+				int[] val = { 0x03 };
+				
+				for (int items : SmallItems[0]) //Small Items
+				{
+					editFile(saveName, items, val);
+				}
+				for (int items : MediumItems[0]) //Medium Items
+				{
+					editFile(saveName, items, val);
+				}
+				for (int items : LargeItems[0]) //Large Items
+				{
+					editFile(saveName, items, val);
+				}
+				for (int items : AirItems[0]) //Air Items
+				{
+					editFile(saveName, items, val);
+				}
+				break;
+			}
+			case 7: //Unlock Small Items in Shop
+			{
+				int[] val = { 0x03 };
+				
+				for (int items : SmallItems[0])
+				{
+					editFile(saveName, items, val);
+				}				
+				break;
+			}
+			case 8: //Unlock Medium Items in Shop
+			{
+				int[] val = { 0x03 };
+				
+				for (int items : MediumItems[0])
+				{
+					editFile(saveName, items, val);
+				}				
+				break;
+			}
+			case 9: //Unlock Large Items in Shop
+			{
+				int[] val = { 0x03 };
+				
+				for (int items : LargeItems[0])
+				{
+					editFile(saveName, items, val);
+				}				
+				break;
+			}
+			case 10: //Unlock Air Items in Shop
+			{
+				int[] val = { 0x03 };
+				
+				for (int items : AirItems[0])
+				{
+					editFile(saveName, items, val);
+				}				
+				break;
+			}								
 		}
 		
 	}
