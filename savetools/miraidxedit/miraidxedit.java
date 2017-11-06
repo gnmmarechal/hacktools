@@ -364,6 +364,9 @@ public class miraidxedit
 			case "unlockAirItems":
 				editSave(saveName, 10);
 				break;
+			case "unlockOutfits":
+				editSave(saveName, 11);
+				break;
 			
 		}
 	}
@@ -479,6 +482,16 @@ public class miraidxedit
 					editFile(saveName, items, val);
 				}				
 				break;
+			}
+			case 11: //Unlock Outfits
+			{
+				int[] val = { 0x03 };
+				
+				for (int outfits : Outfits)
+				{
+					editFile(saveName, outfits, val);
+				}
+				break;	
 			}								
 		}
 		
